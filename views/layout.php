@@ -55,9 +55,18 @@ namespace Lucancstr\GestionChenil\views;
                 {?>
                     <li class="nav-item"><a class="nav-link" href="/utilisateurs">Utilisateurs</a></li><?php
                 }?>
+
+                <?php if($_SESSION['user']['Statut'] == 2)
+                {?>
+                    <li class="nav-item"><a class="nav-link" href="/taches">Tâches quotidiennes</a></li><?php
+                }?>
                     <li class="nav-item"><a class="nav-link" href="/reservations">Réservation</a></li>
                     <li class="nav-item"><a class="nav-link" href="/animaux">Animaux</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/rapports">Rapports</a></li>
+
+                <?php if($_SESSION['user']['Statut'] == 3)
+                {?>
+                    <li class="nav-item"><a class="nav-link" href="/rapports">Rapports</a></li><?php
+                }?>
                     <li class="nav-item"><a class="nav-link" href="/logout">Déconnexion</a></li>
                 </ul>
             </div>

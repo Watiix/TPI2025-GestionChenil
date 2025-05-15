@@ -16,7 +16,7 @@ class UtilisateurController extends BaseController {
             return $response->withHeader('Location', '/')->withStatus(302);
         }
 
-        $utilisateurs = Utilisateur::getAll(); // Récupère tous les utilisateurs
+        $utilisateurs = Utilisateur::getAcceptedUser(); // Récupère tous les utilisateurs
 
         return $this->view->render($response, 'utilisateurs.php', [
             'utilisateurs' => $utilisateurs
@@ -49,6 +49,20 @@ class UtilisateurController extends BaseController {
         $_SESSION['form_succes'] = "Supprimé avec succès.";
 
         return $response->withHeader('Location', '/')->withStatus(302);
+    }
+
+    public function deleteUser(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
+    {
+        if($_SESSION['user']['Statut'] !== 3){
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
+        
+        $idUtilisateur = $args['id'];
+
+        Utilisateur::refusedUser($idUtilisateur);
+        $_SESSION['form_succes'] = "Supprimé avec succès.";
+
+        return $response->withHeader('Location', '/utilisateurs')->withStatus(302);
     }
 
     public function showUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
@@ -109,7 +123,7 @@ class UtilisateurController extends BaseController {
 
         // Validation de la date
         try {
-            Utilisateur::validateDate($DateNaissance, 'Y-m-d');
+            Utilisateur::validateBirthdate($DateNaissance, 'Y-m-d');
         } catch (\Exception $e) {
             $_SESSION['form_error'] = "Date invalide.";
         }
@@ -188,7 +202,7 @@ class UtilisateurController extends BaseController {
 
         // Validation de la date
         try {
-            Utilisateur::validateDate($DateNaissance, 'Y-m-d');
+            Utilisateur::validateBirthdate($DateNaissance, 'Y-m-d');
         } catch (\Exception $e) {
             $_SESSION['form_error'] = "Date invalide.";
         }

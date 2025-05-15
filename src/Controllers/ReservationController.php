@@ -15,7 +15,7 @@ class ReservationController extends BaseController {
     {
         $user = $_SESSION['user'];
     
-        if ($user['Statut'] == 3) {
+        if ($user['Statut'] == 3 || $user['Statut'] == 2) {
             $reservations = Reservation::getAllReservation();
         } elseif ($user['Statut'] == 1) {
             $reservations = Reservation::getAllUserReservation($user['IdUtilisateur']);

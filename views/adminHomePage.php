@@ -1,3 +1,7 @@
+<?php 
+use Lucancstr\GestionChenil\Models\Utilisateur; 
+use Lucancstr\GestionChenil\Models\Animal; 
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,6 +14,7 @@
 
         <h1 class="mb-4">Tableau de bord</h1>
 
+
         <?php if (!empty($_SESSION['form_succes'])): ?>
                 <div class="alert alert-success mt-3">
                     <?= htmlspecialchars($_SESSION['form_succes']) ?>
@@ -18,7 +23,7 @@
             <?php endif; ?>
 
         <!-- Utilisateurs avec IdValide = 0 -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-lg">
             <div class="card-header text-white" style="background-color: rgb(55, 118, 173); color: white;">
                 Utilisateurs à valider
             </div>
@@ -84,7 +89,7 @@
             <?php endif; ?>
 
         <!-- Réservations non validées (IdEtat = 1) -->
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-lg ">
             <div class="card-header text-white"  style="background-color: rgb(55, 118, 173); color: white;">
                 Réservations non validées
             </div>
@@ -107,13 +112,17 @@
                         <?php foreach ($reservations as $res): ?>
                             <?php if ((int)$res['Etat'] === 0): ?>
                         <tr>
-                            <td><?= htmlspecialchars($res['IdReservationnnnn']) ?></td>
+                            <?php 
+                                $proprietaire = Utilisateur::getUserbyId($res['IdProprietaire']);
+                                $animal = Animal::getAnimalbyIdAnimal($res['IdAnimal']);
+                            ?>
+                            <td><?= htmlspecialchars($res['IdReservation']) ?></td>
                             <td><?= htmlspecialchars($res['DateDebut']) ?></td>
                             <td><?= htmlspecialchars($res['DateFin']) ?></td>
                             <td><?= htmlspecialchars($res['PrixJour']) ?> CHF</td>
                             <td><?= htmlspecialchars($res['BesoinParticulier']) ?></td>
-                            <td><?= htmlspecialchars($res['IdProprietaire']) ?></td>
-                            <td><?= htmlspecialchars($res['IdAnimal']) ?></td>
+                            <td><?= htmlspecialchars($proprietaire['Nom'] . " " . $proprietaire['Prenom']) ?></td>
+                            <td><?= htmlspecialchars($animal['NomAnimal']) ?></td>
                             <td>
                                 <?php
                                     switch ($res['Etat']) {
@@ -144,6 +153,23 @@
                 </table>
             </div>
         </div>  
+        <?php if (!empty($_SESSION['form_succes'])): ?>
+            <div class="card mb-4 shadow-lg">
+                <div class="card-header fw-semibold" style="background-color: rgb(55, 118, 173); color: white;">
+                    Journaux système
+                </div>
+                <div class="card-body bg-light rounded" style="font-family: monospace; font-size: 0.9rem;">
+                    <?php
+                        $logs = is_array($_SESSION['form_succes']) ? $_SESSION['form_succes'] : [$_SESSION['form_succes']];
+                        foreach ($logs as $log):
+                            $timestamp = date('[Y-m-d H:i:s]');
+                    ?>
+                        <div><?= $timestamp . ' ' . htmlspecialchars($log) ?></div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php unset($_SESSION['form_succes']); ?>
+        <?php endif; ?>
     </div>
 </body>
 </html>

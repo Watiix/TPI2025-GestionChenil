@@ -12,22 +12,32 @@
         .full-height {
             min-height: 100vh;
         }
+        body {
+            background-image: url('/img/chien.jpg'); /* adapte ce chemin */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        article{
+            margin-top: 100px;
+        }
     </style>
 </head>
-<body>
+<body>  
 
-<div class="container d-flex justify-content-center pt-5 mt-5" style="min-height: 70vh;">
+<article class="container d-flex justify-content-center pt-5 mt-5" style="min-height: 70vh;">
     <div class="text-center">
         <!-- Image -->
-        <img src="/img/logo.png" alt="Bienvenue" class="mb-4" style="max-width: 200px;">
+        <img src="/img/logoBlanc.png" alt="Bienvenue" class="mb-4" style="max-width: 200px;">
 
         <!-- Titre -->
-        <h1 class="display-4 fw-bold mb-4" style="color: rgb(55, 118, 173);">
+        <h1 class="display-4 fw-bold mb-4" style="color: white;">
             Bienvenue sur Les Amis Fidèles
         </h1>
 
         <!-- Texte -->
-        <p class="lead mb-4">
+        <p class="lead mb-4" style="color: white;">
             Commencez par enregistrer vos animaux pour accéder à nos services personnalisés.
         </p>
 
@@ -35,8 +45,24 @@
         <a href="/animaux" class="btn btn-lg text-white" style="background-color: rgb(55, 118, 173);">
             Enregistrer mes animaux
         </a>
+
+        <div class="d-flex justify-content-center mt-4 gap-4 text-white">
+    <div>
+        <i class="bi bi-heart-fill fs-3"></i><br>
+        Soins personnalisés
+    </div>
+    <div>
+        <i class="bi bi-geo-alt-fill fs-3"></i><br>
+        Promenades quotidiennes
+    </div>
+    <div>
+        <i class="bi bi-shield-lock-fill fs-3"></i><br>
+        Sécurité garantie
     </div>
 </div>
+
+    </div>
+</article>
 
 
 </body>

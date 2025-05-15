@@ -44,6 +44,15 @@ class Animal
         return $stmt->fetchAll();
     }
 
+    public static function getAll()
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM ANIMAUX");
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
+
     public static function getAnimalByIdAnimal($id)
     {
         $pdo = Database::connection();

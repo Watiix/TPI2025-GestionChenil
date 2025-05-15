@@ -30,6 +30,7 @@ class HomeController extends BaseController {
         {
             $utilisateurs = Utilisateur::getAll(); // Récupère tous les utilisateurs
             $reservations = Reservation::getAllReservation();
+            
 
             return $this->view->render($response, 'adminHomePage.php', [
                 'utilisateurs' => $utilisateurs,

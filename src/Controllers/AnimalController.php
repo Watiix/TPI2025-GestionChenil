@@ -24,7 +24,7 @@ class AnimalController extends BaseController {
             else
                 $animaux = Animal::getAllWithProprietaire();
 
-            $utilisateurs = Utilisateur::getAll();
+            $utilisateurs = Utilisateur::getAcceptedUser();
 
             return $this->view->render($response, 'animaux.php', ['animaux' => $animaux, 'utilisateurs' => $utilisateurs]);
         } else {
@@ -39,7 +39,7 @@ class AnimalController extends BaseController {
         $isAdmin = ($_SESSION['user']['Statut'] ?? null) === 3;
 
         if ($isAdmin) {
-            $utilisateurs = Utilisateur::getAll();
+            $utilisateurs = Utilisateur::getAcceptedUser();
 
             return $this->view->render($response, 'animalForm.php', [
                 'isAdmin' => $isAdmin,
@@ -101,7 +101,7 @@ class AnimalController extends BaseController {
     
         // Optionnel : récupère les utilisateurs pour l’admin
         if ($isAdmin) {
-            $utilisateurs = Utilisateur::getAll();
+            $utilisateurs = Utilisateur::getAcceptedUser();
 
             return $this->view->render($response, 'animalForm.php', [
                 'isAdmin' => $isAdmin,

@@ -5,10 +5,11 @@
     <title>Liste des utilisateurs</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5 ">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Gestion des utilisateurs</h2>
         <a href="/utilisateur-showForm" class="btn btn-primary" style="background-color: rgb(55, 118, 173); color: white;">Ajouter un utilisateur</a>
@@ -24,11 +25,11 @@
     <?php if (empty($utilisateurs)): ?>
         <div class="alert alert-warning">Aucun utilisateur trouvé.</div>
     <?php else: ?>
-        <div class="card mb-4">
+        <div class="card mb-4 shadow-lg">
             <div class="card-header text-white" style="background-color: rgb(55, 118, 173);">
-                Liste des utilisateurs validés
+            Utilisateurs
             </div>
-            <div class="card-body table-responsive">
+            <div class="card-body table-responsive shadow-lg">
                 <table class="table table-bordered table-hover align-middle">
                     <thead class="table">
                         <tr>
@@ -43,7 +44,6 @@
                     </thead>
                     <tbody>
                         <?php foreach ($utilisateurs as $user): ?>
-                            <?php if ((int)$user['Valide'] !== 0): ?>
                             <tr>
                                 <td><?= htmlspecialchars($user['Nom']) ?></td>
                                 <td><?= htmlspecialchars($user['Prenom']) ?></td>
@@ -77,7 +77,6 @@
                                     </div>
                                 </td>
                             </tr>
-                            <?php endif; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

@@ -1,7 +1,9 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Liste des animaux</h2>
+        <?php if ($_SESSION['user']['Statut'] !== 2){?>
         <a href="/animal-form" class="btn btn-success" style="background-color: rgb(55, 118, 173); color: white;">Ajouter un animal</a>
+        <?php } ?>
     </div>
 
     <!-- BARRE DE RECHERCHE -->
@@ -46,10 +48,11 @@
                 <div class="col">
                     <div class="card shadow-sm border rounded-4 h-100">
                         <div class="card-body p-3 position-relative">
+                            <?php if ($_SESSION['user']['Statut'] !== 2){?>
                             <a href="/animal-edit/<?= $animal['IdAnimal'] ?>" class="position-absolute top-0 end-0 m-2 text-primary" title="Modifier">
                                 <i class="bi bi-pencil-square fs-5"></i>
                             </a>
-
+                            <?php } ?>
                             <h5 class="card-title"><?= htmlspecialchars($animal['NomAnimal'] ?? 'N/A') ?></h5>
                             <p class="card-text mb-1"><strong>Race :</strong> <?= htmlspecialchars($animal['Race'] ?? 'N/A') ?></p>
                             <p class="card-text mb-1"><strong>Âge :</strong> <?= htmlspecialchars($animal['Age'] ?? 'N/A') ?> ans</p>
@@ -64,12 +67,13 @@
                                 </p>
                             <?php endif; ?>
                         </div>
-
+                        <?php if ($_SESSION['user']['Statut'] !== 2){?>
                         <div class="card-footer bg-white text-center border-top-0">
                             <a href="/animal-delete/<?= $animal['IdAnimal'] ?>" class="btn btn-danger w-100" onclick="return confirm('Supprimer cet animal ?')">
                                 Supprimer
                             </a>
                         </div>
+                        <?php } ?>
                     </div>
                 </div>
             <?php endforeach; ?>

@@ -50,6 +50,16 @@ class Utilisateur
         if (!$d || $d->format($format) !== $date) {
             throw new \Exception("La date '$date' n'est pas valide. Format attendu : $format");
         }
+    }
+
+    public static function validateBirthdate(string $date, string $format): void
+    {
+        $d = \DateTime::createFromFormat($format, $date);
+
+        // Si la création échoue ou si la date après formatage ne correspond pas à l'entrée -> KO
+        if (!$d || $d->format($format) !== $date) {
+            throw new \Exception("La date '$date' n'est pas valide. Format attendu : $format");
+        }
 
          // Comparer avec la date du jour
         $today = new \DateTime(); // maintenant
@@ -129,6 +139,20 @@ class Utilisateur
     {
         $pdo = Database::connection();
         $stmt = $pdo->query("SELECT IdUtilisateur, Nom, Prenom, Pseudo, Email, DateNaissance, Statut, Valide FROM UTILISATEURS ORDER BY Valide ASC, Statut DESC");
+        return $stmt->fetchAll();
+    }
+
+    public static function getAcceptedUser()
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->query("SELECT IdUtilisateur, Nom, Prenom, Pseudo, Email, DateNaissance, Statut, Valide FROM UTILISATEURS WHERE Valide = 1 ORDER BY Valide ASC, Statut DESC");
+        return $stmt->fetchAll();
+    }
+
+    public static function getEmployes()
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->query("SELECT * FROM UTILISATEURS WHERE Statut = 2");
         return $stmt->fetchAll();
     }
 
