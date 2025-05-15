@@ -107,7 +107,7 @@
                         <?php foreach ($reservations as $res): ?>
                             <?php if ((int)$res['Etat'] === 0): ?>
                         <tr>
-                            <td><?= htmlspecialchars($res['IdReservation']) ?></td>
+                            <td><?= htmlspecialchars($res['IdReservationnnnn']) ?></td>
                             <td><?= htmlspecialchars($res['DateDebut']) ?></td>
                             <td><?= htmlspecialchars($res['DateFin']) ?></td>
                             <td><?= htmlspecialchars($res['PrixJour']) ?> CHF</td>
