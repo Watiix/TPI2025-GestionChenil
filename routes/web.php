@@ -6,6 +6,7 @@ use Lucancstr\GestionChenil\Controllers\AnimalController;
 use Lucancstr\GestionChenil\Controllers\UtilisateurController;
 use Lucancstr\GestionChenil\Controllers\ReservationController;
 use Lucancstr\GestionChenil\Controllers\TacheController;
+use Lucancstr\GestionChenil\Controllers\RapportController;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -44,3 +45,7 @@ $app->get('/reservation-edit/{id:[0-9]+}', [ReservationController::class, 'showE
 $app->post('/reservation-update/{id:[0-9]+}', [ReservationController::class, 'editReservation']);
 
 $app->get('/taches', [TacheController::class, 'getTaches']);
+$app->get('/tache-valider/{id:[0-9]+}', [TacheController::class, 'validateTache']);
+
+$app->get('/rapports', [RapportController::class, 'showRapport']);
+$app->post('/generer-pdf', [RapportController::class, 'generate']);

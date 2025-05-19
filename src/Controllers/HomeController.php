@@ -3,6 +3,7 @@ namespace Lucancstr\GestionChenil\Controllers;
 
 use Lucancstr\GestionChenil\Models\Utilisateur;
 use Lucancstr\GestionChenil\Models\Reservation;
+use Lucancstr\GestionChenil\Models\Tache;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,11 +25,15 @@ class HomeController extends BaseController {
         }
         elseif($_SESSION['user']['Statut'] == 2)
         {
-            return $this->view->render($response, 'managerHomePage.php');
+            $taches = Tache::getToday();
+
+            return $this->view->render($response, 'employeHomePage.php', [
+                'taches' => $taches
+            ]);
         }
         else
         {
-            $utilisateurs = Utilisateur::getAll(); // Récupère tous les utilisateurs
+            $utilisateurs = Utilisateur::getAll();
             $reservations = Reservation::getAllReservation();
             
 

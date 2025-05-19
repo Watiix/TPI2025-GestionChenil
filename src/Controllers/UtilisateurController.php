@@ -16,7 +16,7 @@ class UtilisateurController extends BaseController {
             return $response->withHeader('Location', '/')->withStatus(302);
         }
 
-        $utilisateurs = Utilisateur::getAcceptedUser(); // Récupère tous les utilisateurs
+        $utilisateurs = Utilisateur::getAllWithAnimaux(); // Récupère tous les utilisateurs
 
         return $this->view->render($response, 'utilisateurs.php', [
             'utilisateurs' => $utilisateurs

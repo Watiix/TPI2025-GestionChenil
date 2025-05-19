@@ -24,7 +24,7 @@
         }
     </style>
 </head>
-<body>  
+<body>      
 
 <article class="container d-flex justify-content-center pt-5 mt-5" style="min-height: 70vh;">
     <div class="text-center">
@@ -47,18 +47,6 @@
         </a>
 
         <div class="d-flex justify-content-center mt-4 gap-4 text-white">
-    <div>
-        <i class="bi bi-heart-fill fs-3"></i><br>
-        Soins personnalisés
-    </div>
-    <div>
-        <i class="bi bi-geo-alt-fill fs-3"></i><br>
-        Promenades quotidiennes
-    </div>
-    <div>
-        <i class="bi bi-shield-lock-fill fs-3"></i><br>
-        Sécurité garantie
-    </div>
 </div>
 
     </div>

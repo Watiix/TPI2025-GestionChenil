@@ -38,6 +38,7 @@
                             <th>Email</th>
                             <th>Pseudo</th>
                             <th>Date de naissance</th>
+                            <th>Animaux</th>
                             <th>Statut</th>
                             <th>Action</th>
                         </tr>
@@ -50,6 +51,7 @@
                                 <td><?= htmlspecialchars($user['Email']) ?></td>
                                 <td><?= htmlspecialchars($user['Pseudo']) ?></td>
                                 <td><?= htmlspecialchars($user['DateNaissance']) ?></td>
+                                <td><?= htmlspecialchars(Count($user['animaux'])) ?></td>
                                 <td>
                                     <?php
                                         switch ((int)$user['Statut']) {

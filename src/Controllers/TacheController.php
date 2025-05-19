@@ -12,31 +12,47 @@ use Slim\Http\Response;
 class TacheController extends BaseController {
 
     public function getTaches(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
-    {
-        Tache::generateTodayTasksIfNotExists();
+    {   
+        $allTaches = Tache::getToday();
 
-        $taches = Tache::getTodayUnassigned();
-        $employes = Utilisateur::getEmployes();
-        $animaux = Animal::getAll();    
+        if ($allTaches == null) {
+            $animaux = Animal::getAll();  
+            Tache::generateTodayTasksIfNotExists($animaux);
 
-        $totalTaches = count($taches);
-        $totalEmployes = count($employes);
-        $totalAnimaux = count($animaux);
+            $taches = Tache::getTodayUnassigned();
+            $employes = Utilisateur::getEmployes();
 
-        if ($totalTaches > 0 && $totalEmployes > 0 && $totalAnimaux > 0) {
-            $indexEmploye = 0;
-            $indexAnimal = 0;
-
+            $totalEmployes = count($employes);
+            $totalTaches = count($taches);
+            $index = 0;
             foreach ($taches as $tache) {
-                $employe = $employes[$indexEmploye % $totalEmployes];
-                $animal = $animaux[$indexAnimal % $totalAnimaux];
+                // rnd 
+                $employe = $employes[$index];
+                Tache::assignToEmployee($tache['IdTache'], $employe['IdUtilisateur']);
+                $index++;
                 
-                Tache::assignToEmployeeAndAnimal($tache['IdTache'],$employe['IdUtilisateur'],$animal['IdAnimal']);
-                $indexEmploye++;
-                $indexAnimal++;
+                if($index == $totalEmployes){
+                    $index = 0;
+                }
             }
-
-            return $this->view->render($response, 'taches.php');   
         }
-    }   
+
+        return $this->view->render($response, 'taches.php', [
+            'taches' => $allTaches,
+        ]);
+    }  
+    
+    public function validateTache(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
+    {
+        if($_SESSION['user']['Statut'] !== 2){
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
+
+        $idTache = $args['id'];
+
+        Tache::validateTache($idTache);
+        $_SESSION['form_succes'] = "Tache validée avec succès.";
+
+        return $response->withHeader('Location', '/taches')->withStatus(302);
+    }
 }

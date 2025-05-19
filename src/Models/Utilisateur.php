@@ -212,4 +212,30 @@ class Utilisateur
     
         $stmt->execute();
     }
+
+    public static function getAnimauxByUserId($id)
+    {
+        $pdo = Database::connection();
+    
+        $stmt = $pdo->prepare("SELECT * FROM ANIMAUX WHERE IdProprietaire = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
+    public static function getAllWithAnimaux()
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM UTILISATEURS WHERE Valide = 1 ORDER BY Valide ASC, Statut DESC");
+        $stmt->execute();
+        $utilisateurs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($utilisateurs as &$user) {
+            $user['animaux'] = self::getAnimauxByUserId($user['IdUtilisateur']);
+        }
+        
+        return $utilisateurs;
+    }
 }

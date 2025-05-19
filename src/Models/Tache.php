@@ -25,30 +25,36 @@ class Tache
 
     public ?int $IdEmploye = null;
 
-    public static function generateTodayTasksIfNotExists()
+    public static function generateTodayTasksIfNotExists($animaux)
     {
         $pdo = Database::connection();
 
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM TACHES WHERE DateCreation = CURDATE()");
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM TACHES WHERE Date = CURDATE()");
         $stmt->execute();
         $count = $stmt->fetchColumn();
 
         if ($count == 0) {
 
-            $descriptions = [
-                "Alimentation",
-                "Promenade / activité",
-                "Nettoyage enclo / cage",
+            $titres = [
                 "Alimentation",
                 "Promenade / activité",
                 "Nettoyage enclo / cage"
             ];
 
-            $stmt = $pdo->prepare("INSERT INTO TACHES (Description, Etat, DateCreation) VALUES (:desc, '0', CURDATE())");
+            $descriptions = [
+                "Donner la portion quotidienne de croquettes.",
+                "Sortie de 20 minutes à l’extérieur avec surveillance.",
+                "Nettoyer et désinfecter l’espace de l’animal."
+            ];
 
-            foreach ($descriptions as $desc) {
-                $stmt->bindParam(':desc', $desc);
-                $stmt->execute();
+            $stmt = $pdo->prepare("INSERT INTO TACHES (Titre, Description, Etat, Date, IdAnimal) VALUES (:titre, :desc, '0', CURDATE(), :idanimal)");
+            foreach ($animaux as $animal) {
+                for ($i = 0; $i < count($titres); $i++) {
+                    $stmt->bindParam(':titre', $titres[$i]);
+                    $stmt->bindParam(':desc', $descriptions[$i]);
+                    $stmt->bindParam(':idanimal', $animal['IdAnimal']);
+                    $stmt->execute();
+                }
             }
         }
     }
@@ -56,20 +62,63 @@ class Tache
     public static function getTodayUnassigned()
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare("SELECT * FROM TACHES WHERE Etat = 0 AND DateCreation = CURDATE()");
+        $stmt = $pdo->prepare("SELECT * FROM TACHES WHERE Etat = 0 AND Date = CURDATE()");
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public static function assignToEmployeeAndAnimal($idTache, $idEmploye, $idAnimal)
+    public static function assignToEmployee($idTache, $idEmploye)
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare("UPDATE TACHES SET IdEmploye = :employe, IdAnimal = :animal WHERE IdTache = :tache");
+        $stmt = $pdo->prepare("UPDATE TACHES SET IdEmploye = :employe WHERE IdTache = :tache");
     
         $stmt->bindParam(':employe', $idEmploye, PDO::PARAM_INT);
-        $stmt->bindParam(':animal', $idAnimal, PDO::PARAM_INT);
         $stmt->bindParam(':tache', $idTache, PDO::PARAM_INT);
     
         $stmt->execute();
     }
-}
+
+    public static function getToday()
+    {
+        $pdo = Database::connection();
+        
+        $stmt = $pdo->prepare("
+            SELECT 
+                t.*,
+                a.IdAnimal,
+                a.NomAnimal
+            FROM TACHES t
+            LEFT JOIN ANIMAUX a ON t.IdAnimal = a.IdAnimal
+            WHERE DATE(t.Date) = CURDATE()
+        ");
+    
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
+    public static function validateTache($idTache)
+    {
+        $pdo = Database::connection();
+        
+        $stmt = $pdo->prepare("UPDATE TACHES SET Etat = 1 WHERE IdTache = :idTache");
+
+        $stmt->bindParam(':idTache', $idTache); 
+        $stmt->execute();
+    }
+
+    public static function getAnimalForTask($id) {
+        $pdo = Database::connection();
+    
+        $stmt = $pdo->prepare("SELECT a.NomAnimal FROM ANIMAUX a 
+                               JOIN TACHES t ON a.IdAnimal = t.IdAnimal 
+                               WHERE t.IdTache = :id");
+    
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['NomAnimal'] : null;
+    }
+    
+}   
