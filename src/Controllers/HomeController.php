@@ -35,11 +35,14 @@ class HomeController extends BaseController {
         {
             $utilisateurs = Utilisateur::getAll();
             $reservations = Reservation::getAllReservation();
+            $taches = Tache::getAllTaches();
+
             
 
             return $this->view->render($response, 'adminHomePage.php', [
                 'utilisateurs' => $utilisateurs,
-                'reservations' => $reservations
+                'reservations' => $reservations,
+                'taches' => $taches
             ]);
         }
     }

@@ -1,5 +1,6 @@
 <?php 
-use Lucancstr\GestionChenil\Models\Tache; ?>
+use Lucancstr\GestionChenil\Models\Tache; 
+use Lucancstr\GestionChenil\Models\Reservation;?>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Liste des animaux</h2>
@@ -68,18 +69,33 @@ use Lucancstr\GestionChenil\Models\Tache; ?>
                                     <?= htmlspecialchars($animal['NomProprietaire'] ?? '') . ' ' . htmlspecialchars($animal['PrenomProprietaire'] ?? '') ?>
                                 </p>
                             <?php endif; ?>
+                            <?php 
+                            $reservations = Reservation::getReservationsByAnimalId($animal['IdAnimal']); ?>
                             <hr class="my-2">
-                            <?php $taches = Tache::getTachesByAnimalId($animal['IdAnimal']); ?>
-                            <p class="card-text"><strong>Tâches :</strong></p>
+                            <p class="card-text"><strong>Réservations :</strong></p>
                             <ul class="list-unstyled mb-0 ps-3">
-                                <?php foreach ($taches as $tache): ?>
-                                    <li class="mb-1">
-                                        <i class="bi bi-check-circle-fill text-primary me-2"></i>
-                                        <?= htmlspecialchars($tache['Titre'] ?? '') ?>
-                                        <small class="text-muted">– <?= htmlspecialchars($tache['Date'] ?? '') ?></small>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
+                                        <li class="mb-1">
+                                        <?php foreach ($reservations as $reservation): ?>
+                                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                            <?= htmlspecialchars($reservation['DateDebut'] ?? '') . ' - ' . htmlspecialchars($reservation['DateFin'] ?? '') ?>
+                                            <?php endforeach; ?>
+                                        </li>
+                                </ul>
+
+                            <?php $taches = Tache::getTachesByAnimalId($animal['IdAnimal']); 
+                            if(isset($taches)):?>
+                                <hr class="my-2">
+                                <p class="card-text"><strong>Tâches :</strong></p>
+                                <ul class="list-unstyled mb-0 ps-3">
+                                    <?php foreach ($taches as $tache): ?>
+                                        <li class="mb-1">
+                                            <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                            <?= htmlspecialchars($tache['Titre'] ?? '') ?>
+                                            <small class="text-muted">– <?= htmlspecialchars($tache['Date'] ?? '') ?></small>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            <?php endif ?>
                         </div>
                         <?php if ($_SESSION['user']['Statut'] !== 2){?>
                         <div class="card-footer bg-white text-center border-top-0">

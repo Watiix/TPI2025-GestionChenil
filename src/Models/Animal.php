@@ -34,16 +34,6 @@ class Animal
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getAnimalById($id)
-    {
-        $pdo = Database::connection();
-        $stmt = $pdo->prepare("SELECT IdAnimal, NomAnimal, Race, Age, Sexe, Poids, Taille, Alimentation, IdProprietaire FROM ANIMAUX WHERE IdProprietaire = :id");
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
-
     public static function getAll()
     {
         $pdo = Database::connection();

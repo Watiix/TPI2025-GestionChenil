@@ -141,10 +141,10 @@ use Lucancstr\GestionChenil\Models\Animal;
                                 ?>
                             </td>
                             <td>
-                                    <div class="d-flex gap-2">
-                                        <a href="/reservation-accepted/<?= $res['IdReservation'] ?>" class="btn btn-sm btn-outline-success">Valider</a>
-                                        <a href="/reservation-refused/<?= $res['IdReservation'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Refuser cette réservation ?')">Refuser</a>
-                                    </div>
+                                <div class="d-flex gap-2">
+                                    <a href="/reservation-accepted/<?= $res['IdReservation'] ?>" class="btn btn-sm btn-outline-success">Valider</a>
+                                    <a href="/reservation-refused/<?= $res['IdReservation'] ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Refuser cette réservation ?')">Refuser</a>
+                                </div>
                             </td>   
                         </tr>
                         <?php endif; ?>
@@ -153,6 +153,57 @@ use Lucancstr\GestionChenil\Models\Animal;
                 </table>
             </div>
         </div>  
+        <div class="card mb-4 shadow-lg">
+    <div class="card-header text-white" style="background-color: rgb(55, 118, 173);">
+        Aperçu chronologique – Réservations & Tâches
+    </div>
+    <div class="card-body">
+
+                <?php
+                $calendrier = [];
+
+                foreach ($reservations as $res) {
+                    if ((int)$res['Etat'] === 1) {
+                        $debut = new DateTime($res['DateDebut']);
+                        $fin = new DateTime($res['DateFin']);
+                        $proprio = Utilisateur::getUserbyId($res['IdProprietaire']);
+                        $animal = Animal::getAnimalbyIdAnimal($res['IdAnimal']);
+
+                        while ($debut <= $fin) {
+                            $date = $debut->format('Y-m-d');
+                            $calendrier[$date][] = "Réservation : " . htmlspecialchars($animal['NomAnimal']) . " (" . htmlspecialchars($proprio['Prenom']) . ")";
+                            $debut->modify('+1 day');
+                        }
+                    }
+                }
+
+                // Tâches
+                foreach ($taches as $t) {
+                    $date = $t['Date'];
+                    $desc = htmlspecialchars($t['Titre']);
+                    $calendrier[$date][] = "Tâche : $desc (par)";
+                }
+
+                // Tri par date
+                ksort($calendrier);
+                ?>
+
+                <ul class="list-group">
+                    <?php foreach ($calendrier as $date => $elements): ?>
+                        <li class="list-group-item">
+                            <strong><?= htmlspecialchars($date) ?></strong>
+                            <ul class="mb-0 mt-1">
+                                <?php foreach ($elements as $event): ?>
+                                    <li><?= $event ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+
+            </div>
+        </div>
+
         <?php if (!empty($_SESSION['form_succes'])): ?>
             <div class="card mb-4 shadow-lg">
                 <div class="card-header fw-semibold" style="background-color: rgb(55, 118, 173); color: white;">

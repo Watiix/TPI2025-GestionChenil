@@ -20,7 +20,7 @@ class AnimalController extends BaseController {
                 if($id == 0)
                     $animaux = Animal::getAllWithProprietaire();
                 else
-                    $animaux = Animal::getAnimalById($id);
+                    $animaux = Animal::getAnimalByIdAnimal($id);
             else
                 $animaux = Animal::getAllWithProprietaire();
 
@@ -28,7 +28,7 @@ class AnimalController extends BaseController {
 
             return $this->view->render($response, 'animaux.php', ['animaux' => $animaux, 'utilisateurs' => $utilisateurs]);
         } else {
-            $animaux = Animal::getAnimalById($user['IdUtilisateur']);
+            $animaux = Animal::getAnimalByIdAnimal($user['IdUtilisateur']);
         }
 
 

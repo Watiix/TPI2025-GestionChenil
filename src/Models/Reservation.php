@@ -153,4 +153,14 @@ class Reservation
     
         $stmt->execute();
     }   
+
+    public static function getReservationsByAnimalId($IdAnimal)
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM RESERVATIONS WHERE Etat = 1 AND IdAnimal = :idanimal ORDER BY DateDebut ASC");
+        $stmt->bindParam(':idanimal', $IdAnimal, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

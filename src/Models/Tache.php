@@ -118,4 +118,12 @@ class Tache
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public static function getAllTaches()
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM TACHES WHERE Etat = 1 ORDER BY Date ASC");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }   

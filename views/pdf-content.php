@@ -1,47 +1,60 @@
+<?php
+use Lucancstr\GestionChenil\Models\Reservation; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Rapport PDF - Les Amis Fidèles</title>
+    <title>Rapport</title>
+    <style>
+        body { font-family: DejaVu Sans; font-size: 12px; }
+        h1, h2 { color: #3776ad; }
+        .block { margin-bottom: 20px; }
+        ul { padding-left: 15px; }
+    </style>
 </head>
 <body>
+    <h1>Les Amis Fidèles - Rapport PDF</h1>
 
-    <h1 class="text-center mb-4">Les Amis Fidèles</h1>
+    <p><strong>Utilisateurs :</strong> <?= $nbUsers ?></p>
+    <p><strong>Animaux :</strong> <?= $nbAnimaux ?></p>
+    <p><strong>Réservations :</strong> <?= $nbReservations ?></p>
 
-    <div class="stat-box">
-        <h2>Statistiques globales</h2>
-        <ul class="mb-0">
-            <li><strong>Utilisateurs :</strong> <?= $nbUtilisateurs ?></li>
-            <li><strong>Animaux :</strong> <?= $nbAnimaux ?></li>
-            <li><strong>Réservations :</strong> <?= $nbReservations ?></li>
-        </ul>
-    </div>
-    
-    <h2>Animaux par utilisateur</h2>
+    <hr>
 
     <?php foreach ($utilisateurs as $user): ?>
-        <div class="user-block">
-            <h4><?= htmlspecialchars($user['Prenom'] . ' ' . $user['Nom']) ?> 
-                <small class="text-muted">(<?= htmlspecialchars($user['Email']) ?>)</small>
-            </h4>
-
-            <?php if (!empty($user['animaux'])): ?>
+    <div class="block mb-4">
+        <h2><?= htmlspecialchars($user['Prenom']) . ' ' . htmlspecialchars($user['Nom']) ?></h2>
+        <p>Email : <?= htmlspecialchars($user['Email']) ?></p>
+        <p>Pseudo : <?= htmlspecialchars($user['Pseudo']) ?></p>
+        
+        <?php if (!empty($user['animaux'])): ?>
+            <ul>
                 <?php foreach ($user['animaux'] as $animal): ?>
-                    <div class="animal-card">
-                        <strong>Nom :</strong> <?= htmlspecialchars($animal['NomAnimal']) ?><br>
-                        <strong>Race :</strong> <?= htmlspecialchars($animal['Race']) ?><br>
-                        <strong>Âge :</strong> <?= htmlspecialchars($animal['Age']) ?> ans<br>
-                        <strong>Sexe :</strong> <?= htmlspecialchars($animal['Sexe']) ?><br>
-                        <strong>Poids :</strong> <?= htmlspecialchars($animal['Poids']) ?> kg<br>
-                        <strong>Taille :</strong> <?= htmlspecialchars($animal['Taille']) ?> cm<br>
-                        <strong>Alimentation :</strong> <?= htmlspecialchars($animal['Alimentation']) ?>
-                    </div>
+                    <li>
+                        <strong><?= htmlspecialchars($animal['NomAnimal']) ?></strong> –
+                        <?= htmlspecialchars($animal['Race']) ?> –
+                        <?= htmlspecialchars($animal['Age']) ?> ans
+                        
+                        <?php $reservations = Reservation::getReservationsByAnimalId($animal['IdAnimal']);       
+                        if (!empty($reservations)): ?>
+                            <ul>
+                                <?php foreach ($reservations as $res): ?>
+                                    <li>
+                                        Réservation : <?= htmlspecialchars($res['DateDebut']) ?> → <?= htmlspecialchars($res['DateFin']) ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p><em>Aucune réservation</em></p>
+                        <?php endif; ?>
+                    </li>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-muted">Aucun animal enregistré.</p>
-            <?php endif; ?>
-        </div>
-    <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>Aucun animal</p>
+        <?php endif; ?>
+    </div>
+<?php endforeach; ?>
 
 </body>
 </html>
