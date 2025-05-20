@@ -12,6 +12,17 @@ use Mpdf\Mpdf;
 
 class RapportController extends BaseController {
 
+    /**
+     * showRapport
+     *
+     * Affiche la page du rapport. Charge les utilisateurs avec leurs animaux (potentiellement pour le rapport).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+
     public function showRapport(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $utilisateurs = Utilisateur::getAllWithAnimaux();
@@ -20,6 +31,16 @@ class RapportController extends BaseController {
         return $this->view->render($response, 'rapport.php');
     }
 
+    /**
+     * generate
+     *
+     * Génère un rapport PDF avec les utilisateurs, animaux et réservations, puis le sauvegarde dans le dossier tmp.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function generate(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $utilisateurs = Utilisateur::getAllWithAnimaux(); // Structure : user + animaux[]

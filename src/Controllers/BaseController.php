@@ -18,7 +18,16 @@ abstract class BaseController
         $this->noLayout = new PhpRenderer(__DIR__ . '/../../views');
     }
 
-    // Méthode pour y accéder facilement depuis les enfants
+    /**
+     * renderWithoutLayout
+     *
+     * Rend une vue sans utiliser de layout, comme dans login/register.
+     *
+     * @param ResponseInterface $response
+     * @param string $template Nom du fichier de vue à afficher
+     * @param array $data Données à passer à la vue
+     * @return ResponseInterface
+     */
     public function renderWithoutLayout($response, $template, $data = [])
     {
         return $this->noLayout->render($response, $template, $data);

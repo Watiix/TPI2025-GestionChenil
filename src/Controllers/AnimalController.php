@@ -10,6 +10,16 @@ use Slim\Http\Response;
 
 class AnimalController extends BaseController {
 
+    /**
+     * getAnimaux
+     *
+     * Récupère les animaux à afficher selon le rôle du user (admin, employé ou proprio).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function getAnimaux(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $id = $_GET['id'] ?? null;
@@ -35,6 +45,16 @@ class AnimalController extends BaseController {
         return $this->view->render($response, 'animaux.php', ['animaux' => $animaux]);
     }
 
+    /**
+     * showAnimalFormPage
+     *
+     * Affiche le formulaire d’ajout d’un animal. Si admin, charge aussi la liste des utilisateurs.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function showAnimalFormPage(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $isAdmin = ($_SESSION['user']['Statut'] ?? null) === 3;
@@ -53,6 +73,16 @@ class AnimalController extends BaseController {
         ]);
     }
 
+    /**
+     * addAnimal
+     *
+     * Ajoute un nouvel animal après vérif des champs. Associe l’animal à l’utilisateur (admin ou proprio).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function addAnimal(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         // reset les session
@@ -94,6 +124,16 @@ class AnimalController extends BaseController {
         return $response->withHeader('Location', '/animaux')->withStatus(302);
     }
 
+    /**
+     * showEditForm
+     *
+     * Affiche le formulaire pré-rempli pour modifier un animal. Si admin, charge aussi les utilisateurs.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function showEditForm(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $id = $args['id'];
@@ -117,6 +157,16 @@ class AnimalController extends BaseController {
         ]);
     }
 
+    /**
+     * deleteAnimal
+     *
+     * Supprime un animal selon son ID. Stocke un message de succès ou d'erreur en session.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function deleteAnimal(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         $id = $args['id'];
@@ -131,6 +181,16 @@ class AnimalController extends BaseController {
         return $response->withHeader('Location', '/animaux')->withStatus(302);
     }
     
+    /**
+     * updateAnimal
+     *
+     * Modifie un animal existant avec les nouvelles infos du formulaire. Vérifie les champs et le rôle du user.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function updateAnimal(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         // reset les session

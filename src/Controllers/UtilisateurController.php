@@ -10,6 +10,16 @@ use Slim\Http\Response;
 
 class UtilisateurController extends BaseController {
 
+    /**
+     * getUsers
+     *
+     * Affiche la liste des utilisateurs avec leurs animaux, uniquement accessible par un admin.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function getUsers(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -23,6 +33,16 @@ class UtilisateurController extends BaseController {
         ]);
     }
 
+    /**
+     * acceptUser
+     *
+     * Valide un utilisateur (admin only) en changeant son statut dans la base.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function acceptUser(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -37,6 +57,16 @@ class UtilisateurController extends BaseController {
         return $response->withHeader('Location', '/')->withStatus(302);
     }
 
+    /**
+     * refusedUser
+     *
+     * Refuse (supprime) un utilisateur en attente. Accessible uniquement par un admin.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function refusedUser(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -51,6 +81,16 @@ class UtilisateurController extends BaseController {
         return $response->withHeader('Location', '/')->withStatus(302);
     }
 
+    /**
+     * deleteUser
+     *
+     * Supprime un utilisateur existant (admin uniquement) via son ID.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function deleteUser(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -65,6 +105,17 @@ class UtilisateurController extends BaseController {
         return $response->withHeader('Location', '/utilisateurs')->withStatus(302);
     }
 
+    /**
+     * showUserForm
+     *
+     * Affiche le formulaire d’ajout d’un utilisateur (réservé à l’admin).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+
     public function showUserForm(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -74,6 +125,16 @@ class UtilisateurController extends BaseController {
         return $this->view->render($response, 'utilisateurForm.php');
     }
 
+    /**
+     * addUtilisateur
+     *
+     * Ajoute un nouvel utilisateur depuis le formulaire admin après vérification des champs et validation.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function addUtilisateur(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -149,6 +210,16 @@ class UtilisateurController extends BaseController {
         return $this->view->render($response->withStatus(302), 'utilisateurForm.php', ['utilisateurs' => $utilisateurs]);
     }
 
+    /**
+     * showEditForm
+     *
+     * Affiche le formulaire de modification d’un utilisateur (admin uniquement) avec ses infos pré-remplies.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function showEditForm(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){
@@ -163,6 +234,16 @@ class UtilisateurController extends BaseController {
         ]);
     }
 
+     /**
+     * editUser
+     *
+     * Modifie les infos d’un utilisateur existant après vérification des champs (admin uniquement).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function editUser(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 3){

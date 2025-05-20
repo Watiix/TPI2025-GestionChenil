@@ -11,6 +11,17 @@ use Slim\Http\Response;
 
 class TacheController extends BaseController {
 
+    /**
+     * getTaches
+     *
+     * Récupère les tâches du jour. Si aucune tâche n'existe, les génère et les assigne automatiquement aux employés.
+     * Affiche la liste des tâches dans la vue.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function getTaches(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {   
         $allTaches = Tache::getToday();
@@ -49,6 +60,16 @@ class TacheController extends BaseController {
         ]);
     }  
     
+    /**
+     * validateTache
+     *
+     * Valide une tâche (employé uniquement) selon son ID.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function validateTache(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if($_SESSION['user']['Statut'] !== 2){

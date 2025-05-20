@@ -11,6 +11,16 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class HomeController extends BaseController {
 
+    /**
+     * showHomePage
+     *
+     * Affiche la page d’accueil selon le rôle de l’utilisateur connecté (proprio, employé ou admin).
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function showHomePage(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         if (!isset($_SESSION['user'])) {
@@ -47,10 +57,31 @@ class HomeController extends BaseController {
         }
     }
 
+    /**
+     * showLoginPage
+     *
+     * Affiche la page de connexion sans layout.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function showLoginPage(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {   
         return $this->renderWithoutLayout($response, 'login.php');
     }
+
+    /**
+     * showRegisterPage
+     *
+     * Affiche la page d'inscription sans layout.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
 
     public function showRegisterPage(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {   

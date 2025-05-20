@@ -8,10 +8,19 @@ use Slim\Http\Response;
 
 
 class AuthController extends BaseController {
-
+    
+    /**
+     * createAccount
+     *
+     * Gère l'inscription d'un nouvel utilisateur : vérifie les champs, l'email, les mots de passe et crée le compte si tout est ok.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function createAccount(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
-        // reset les session
         unset($_SESSION['form_error']);
         unset($_SESSION['form_succes']);
 
@@ -34,7 +43,6 @@ class AuthController extends BaseController {
             'email' => $email
         ];
 
-        // Vérification email valide
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['form_error'] = "L'email est invalide.";
         }
@@ -82,6 +90,16 @@ class AuthController extends BaseController {
         return $this->renderWithoutLayout($response->withStatus(302), 'register.php', ['data' => $data]);
     }
 
+    /**
+     * login
+     *
+     * Tente de connecter un utilisateur avec son email et mot de passe. Stocke les infos en session si ok.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
     public function login(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
         // reset la session
@@ -131,7 +149,18 @@ class AuthController extends BaseController {
         return $this->renderWithoutLayout($response->withStatus(302),'login.php', ['data' => $data]);
     
     }
-    
+        
+    /**
+     * logout
+     *
+     * Déconnecte l'utilisateur en détruisant la session, puis redirige vers l'accueil.
+     *
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
+     * @param array $args
+     * @return ResponseInterface
+     */
+
     public function logout(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface 
     {
         session_destroy();
