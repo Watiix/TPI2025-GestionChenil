@@ -14,7 +14,7 @@ class AnimalController extends BaseController {
     {
         $id = $_GET['id'] ?? null;
         $user = $_SESSION['user'];
-    
+        
         if ($user['Statut'] !== 1) {
             if(isset($id))
                 if($id == 0)
@@ -30,7 +30,8 @@ class AnimalController extends BaseController {
         } else {
             $animaux = Animal::getAnimalById($user['IdUtilisateur']);
         }
-        
+
+
         return $this->view->render($response, 'animaux.php', ['animaux' => $animaux]);
     }
 

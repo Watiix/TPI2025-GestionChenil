@@ -56,7 +56,7 @@ namespace Lucancstr\GestionChenil\views;
                     <li class="nav-item"><a class="nav-link" href="/utilisateurs">Utilisateurs</a></li><?php
                 }?>
 
-                <?php if($_SESSION['user']['Statut'] == 2)
+                <?php if($_SESSION['user']['Statut'] !== 1)
                 {?>
                     <li class="nav-item"><a class="nav-link" href="/taches">Tâches quotidiennes</a></li><?php
                 }?>

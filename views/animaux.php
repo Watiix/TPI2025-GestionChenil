@@ -1,3 +1,5 @@
+<?php 
+use Lucancstr\GestionChenil\Models\Tache; ?>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Liste des animaux</h2>
@@ -60,12 +62,24 @@
                             <p class="card-text mb-1"><strong>Poids :</strong> <?= htmlspecialchars($animal['Poids'] ?? 'N/A') ?> kg</p>
                             <p class="card-text mb-1"><strong>Taille :</strong> <?= htmlspecialchars($animal['Taille'] ?? 'N/A') ?> cm</p>
                             <p class="card-text mb-1"><strong>Alimentation :</strong> <?= htmlspecialchars($animal['Alimentation'] ?? 'N/A') ?></p>
-                            <hr class="my-2">
                             <?php if ($utilisateur && $utilisateur['IdUtilisateur'] != $animal['IdProprietaire']): ?>
+                                <hr class="my-2">
                                 <p class="card-text"><strong>Propriétaire :</strong>
                                     <?= htmlspecialchars($animal['NomProprietaire'] ?? '') . ' ' . htmlspecialchars($animal['PrenomProprietaire'] ?? '') ?>
                                 </p>
                             <?php endif; ?>
+                            <hr class="my-2">
+                            <?php $taches = Tache::getTachesByAnimalId($animal['IdAnimal']); ?>
+                            <p class="card-text"><strong>Tâches :</strong></p>
+                            <ul class="list-unstyled mb-0 ps-3">
+                                <?php foreach ($taches as $tache): ?>
+                                    <li class="mb-1">
+                                        <i class="bi bi-check-circle-fill text-primary me-2"></i>
+                                        <?= htmlspecialchars($tache['Titre'] ?? '') ?>
+                                        <small class="text-muted">– <?= htmlspecialchars($tache['Date'] ?? '') ?></small>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                         <?php if ($_SESSION['user']['Statut'] !== 2){?>
                         <div class="card-footer bg-white text-center border-top-0">

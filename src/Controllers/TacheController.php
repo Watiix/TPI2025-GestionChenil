@@ -14,13 +14,13 @@ class TacheController extends BaseController {
     public function getTaches(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {   
         $allTaches = Tache::getToday();
+        $employes = Utilisateur::getEmployes();
 
         if ($allTaches == null) {
             $animaux = Animal::getAll();  
             Tache::generateTodayTasksIfNotExists($animaux);
 
             $taches = Tache::getTodayUnassigned();
-            $employes = Utilisateur::getEmployes();
 
             $totalEmployes = count($employes);
             $totalTaches = count($taches);
@@ -35,6 +35,13 @@ class TacheController extends BaseController {
                     $index = 0;
                 }
             }
+        }
+
+        if($_SESSION['user']['IdUtilisateur'] == 3)
+        {
+            return $this->view->render($response, 'taches.php', [
+                'taches' => $allTaches,
+            ]);
         }
 
         return $this->view->render($response, 'taches.php', [

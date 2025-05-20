@@ -86,10 +86,13 @@ class Tache
             SELECT 
                 t.*,
                 a.IdAnimal,
-                a.NomAnimal
+                a.NomAnimal,
+                u.Nom AS NomEmploye,
+                u.Prenom AS PrenomEmploye
             FROM TACHES t
             LEFT JOIN ANIMAUX a ON t.IdAnimal = a.IdAnimal
-            WHERE DATE(t.Date) = CURDATE()
+            LEFT JOIN UTILISATEURS u ON t.IdEmploye = u.IdUtilisateur
+            WHERE DATE(t.Date) = CURDATE() ORDER BY t.IdEmploye ASC
         ");
     
         $stmt->execute();
@@ -107,18 +110,12 @@ class Tache
         $stmt->execute();
     }
 
-    public static function getAnimalForTask($id) {
+    public static function getTachesByAnimalId($idAnimal)
+    {
         $pdo = Database::connection();
-    
-        $stmt = $pdo->prepare("SELECT a.NomAnimal FROM ANIMAUX a 
-                               JOIN TACHES t ON a.IdAnimal = t.IdAnimal 
-                               WHERE t.IdTache = :id");
-    
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt = $pdo->prepare("SELECT * FROM TACHES WHERE Etat = 1 AND IdAnimal = :idanimal");
+        $stmt->bindParam(':idanimal', $idAnimal);
         $stmt->execute();
-    
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['NomAnimal'] : null;
+        return $stmt->fetchAll();
     }
-    
 }   
