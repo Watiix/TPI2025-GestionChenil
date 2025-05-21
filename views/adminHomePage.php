@@ -181,7 +181,7 @@ use Lucancstr\GestionChenil\Models\Animal;
                 foreach ($taches as $t) {
                     $date = $t['Date'];
                     $desc = htmlspecialchars($t['Titre']);
-                    $calendrier[$date][] = "Tâche : $desc (par)";
+                    $calendrier[$date][] = "Tâche : $desc";
                 }
 
                 // Tri par date

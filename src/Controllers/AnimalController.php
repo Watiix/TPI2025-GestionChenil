@@ -38,7 +38,7 @@ class AnimalController extends BaseController {
 
             return $this->view->render($response, 'animaux.php', ['animaux' => $animaux, 'utilisateurs' => $utilisateurs]);
         } else {
-            $animaux = Animal::getAnimalByIdAnimal($user['IdUtilisateur']);
+            $animaux = Utilisateur::getAnimauxByUserId($user['IdUtilisateur']);
         }
 
 
