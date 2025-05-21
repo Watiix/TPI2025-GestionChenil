@@ -25,6 +25,16 @@ class Tache
 
     public ?int $IdEmploye = null;
 
+    /**
+     * generateTodayTasksIfNotExists
+     *
+     * Génère automatiquement les tâches du jour pour chaque animal s'il n'en existe aucune pour aujourd'hui.
+     * Crée trois tâches types : alimentation, promenade et nettoyage.
+     *
+     * @param array $animaux Liste des animaux pour lesquels générer les tâches
+     * @return void
+     */
+
     public static function generateTodayTasksIfNotExists($animaux)
     {
         $pdo = Database::connection();
@@ -59,6 +69,14 @@ class Tache
         }
     }
 
+    /**
+     * getTodayUnassigned
+     *
+     * Récupère toutes les tâches du jour qui ne sont pas encore validées (Etat = 0).
+     *
+     * @return array Liste des tâches non validées du jour
+     */
+
     public static function getTodayUnassigned()
     {
         $pdo = Database::connection();
@@ -66,6 +84,16 @@ class Tache
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    /**
+     * assignToEmployee
+     *
+     * Assigne une tâche à un employé en mettant à jour son ID dans la base.
+     *
+     * @param int $idTache ID de la tâche
+     * @param int $idEmploye ID de l'employé
+     * @return void
+     */
 
     public static function assignToEmployee($idTache, $idEmploye)
     {
@@ -77,6 +105,15 @@ class Tache
     
         $stmt->execute();
     }
+
+    /**
+     * getToday
+     *
+     * Récupère toutes les tâches du jour avec les infos de l’animal et de l’employé assigné (s’il y en a un).
+     * Triées par ID d’employé.
+     *
+     * @return array Liste des tâches du jour avec animal et employé liés
+     */
 
     public static function getToday()
     {
@@ -99,7 +136,14 @@ class Tache
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-
+    /**
+     * validateTache
+     *
+     * Marque une tâche comme validée en mettant son état à 1.
+     *
+     * @param int $idTache ID de la tâche à valider
+     * @return void
+     */
     public static function validateTache($idTache)
     {
         $pdo = Database::connection();
@@ -110,6 +154,14 @@ class Tache
         $stmt->execute();
     }
 
+    /**
+     * getTachesByAnimalId
+     *
+     * Récupère toutes les tâches validées (Etat = 1) associées à un animal spécifique.
+     *
+     * @param int $idAnimal ID de l’animal
+     * @return array Liste des tâches validées pour cet animal
+     */
     public static function getTachesByAnimalId($idAnimal)
     {
         $pdo = Database::connection();
@@ -118,6 +170,14 @@ class Tache
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    /**
+     * getAllTaches
+     *
+     * Récupère toutes les tâches validées (Etat = 1), triées par date croissante.
+     *
+     * @return array Liste de toutes les tâches validées
+     */
 
     public static function getAllTaches()
     {

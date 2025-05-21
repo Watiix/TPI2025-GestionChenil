@@ -25,6 +25,13 @@ class Animal
 
     public ?date $birthdate = null;
 
+    /**
+     * getAllWithProprietaire
+     *
+     * Récupère tous les animaux avec les infos de leur propriétaire (nom et prénom) via une jointure.
+     *
+     * @return array Liste des animaux avec données du propriétaire
+     */
     public static function getAllWithProprietaire()
     {
         $pdo = Database::connection();
@@ -34,6 +41,14 @@ class Animal
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * getAll
+     *
+     * Récupère tous les animaux de la base de données sans jointure.
+     *
+     * @return array Liste de tous les animaux
+     */
+
     public static function getAll()
     {
         $pdo = Database::connection();
@@ -42,6 +57,15 @@ class Animal
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * getAnimalByIdAnimal
+     *
+     * Récupère un animal selon son ID.
+     *
+     * @param int $id ID de l'animal
+     * @return array|null Données de l'animal ou null si non trouvé
+     */
 
     public static function getAnimalByIdAnimal($id)
     {
@@ -53,6 +77,15 @@ class Animal
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * getIdProprietaireByIdAnimal
+     *
+     * Récupère l'ID du propriétaire d'un animal donné.
+     *
+     * @param int $id ID de l'animal
+     * @return int|null ID du propriétaire ou null si non trouvé
+     */
+
     public static function getIdProprietaireByIdAnimal($id)
     {
         $pdo = Database::connection();
@@ -62,6 +95,22 @@ class Animal
         
         return $stmt->fetchColumn();
     }
+
+    /**
+     * addAnimal
+     *
+     * Ajoute un nouvel animal à la base de données avec toutes ses informations et son propriétaire.
+     *
+     * @param string $NomAnimal
+     * @param string $Race
+     * @param int $Age
+     * @param string $Sexe
+     * @param string $Poids
+     * @param string $Taille
+     * @param string $Alimentation
+     * @param int $IdProprietaire
+     * @return void
+     */
 
     public static function addAnimal($NomAnimal, $Race, $Age, $Sexe, $Poids, $Taille, $Alimentation, $IdProprietaire)
     {
@@ -82,6 +131,15 @@ class Animal
         $stmt->execute();
     }
 
+    /**
+     * deleteById
+     *
+     * Supprime un animal de la base de données selon son ID.
+     *
+     * @param int $id ID de l'animal à supprimer
+     * @return void
+     */
+
     public static function deleteById($id)
     {
         $pdo = Database::connection();
@@ -89,6 +147,23 @@ class Animal
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
     }
+
+    /**
+     * updateAnimal
+     *
+     * Met à jour les informations d’un animal existant dans la base de données.
+     *
+     * @param string $NomAnimal
+     * @param string $Race
+     * @param int $Age
+     * @param string $Sexe
+     * @param string $Poids
+     * @param string $Taille
+     * @param string $Alimentation
+     * @param int $IdProprietaire
+     * @param int $IdAnimal
+     * @return void
+     */
 
     public static function updateAnimal($NomAnimal, $Race, $Age, $Sexe, $Poids, $Taille, $Alimentation, $IdProprietaire, $IdAnimal)
     {

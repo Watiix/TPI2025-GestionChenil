@@ -7,7 +7,14 @@ use PDO;
 
 class Database
 {
-    
+    /**
+     * connection
+     *
+     * Établit et retourne une connexion PDO à la base de données (singleton).
+     *
+     * @return PDO Instance PDO connectée à la base
+     */
+
     public static function connection(): PDO
     {
         static $pdo = null;

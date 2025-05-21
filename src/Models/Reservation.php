@@ -31,6 +31,13 @@ class Reservation
 
     public ?int $IdAnimal = null;
 
+    /**
+     * getAllReservation
+     *
+     * Récupère toutes les réservations, triées par état (en attente en premier) puis par date de début.
+     *
+     * @return array Liste des réservations
+     */
 
     public static function getAllReservation()
     {
@@ -38,6 +45,15 @@ class Reservation
         $stmt = $pdo->query("SELECT * FROM RESERVATIONS ORDER BY (Etat = 2) ASC, DateDebut ASC");
         return $stmt->fetchAll();
     }
+
+    /**
+     * getAllUserReservation
+     *
+     * Récupère toutes les réservations d’un propriétaire donné, triées par état (validé, en attente, refusé) puis par date.
+     *
+     * @param int $IdProprietaire ID du propriétaire
+     * @return array Liste des réservations du propriétaire
+     */
 
     public static function getAllUserReservation($IdProprietaire)
     {
@@ -48,7 +64,54 @@ class Reservation
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * getReservationbyId
+     *
+     * Récupère une réservation selon son ID.
+     *
+     * @param int $id ID de la réservation
+     * @return array|null Données de la réservation ou null si non trouvée
+     */
+
+    public static function getReservationbyId($id)
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM RESERVATIONS WHERE IdReservation = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * getReservationsByAnimalId
+     *
+     * Récupère toutes les réservations validées (Etat = 1) pour un animal donné, triées par date de début.
+     *
+     * @param int $IdAnimal ID de l'animal
+     * @return array Liste des réservations validées pour cet animal
+     */
+
+    public static function getReservationsByAnimalId($IdAnimal)
+    {
+        $pdo = Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM RESERVATIONS WHERE Etat = 1 AND IdAnimal = :idanimal ORDER BY DateDebut ASC");
+        $stmt->bindParam(':idanimal', $IdAnimal, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
     
+    /**
+     * validateReservation
+     *
+     * Valide une réservation en mettant à jour son état et l’ID de l’administrateur qui l’a validée.
+     *
+     * @param int $idReservation ID de la réservation
+     * @param int $IdAdministrateur ID de l’administrateur
+     * @return void
+     */
+
     public static function validateReservation($idReservation, $IdAdministrateur)
     {   
         $pdo = Database::connection();
@@ -59,6 +122,16 @@ class Reservation
         $stmt->bindParam(':idReservation', $idReservation);
         $stmt->execute();
     }
+
+    /**
+     * refusedReservation
+     *
+     * Refuse une réservation en mettant à jour son état et l’ID de l’administrateur qui l’a refusée.
+     *
+     * @param int $idReservation ID de la réservation
+     * @param int $IdAdministrateur ID de l’administrateur
+     * @return void
+     */
 
     public static function refusedReservation($idReservation, $IdAdministrateur)
     {
@@ -71,6 +144,15 @@ class Reservation
         $stmt->execute();
     }
 
+    /**
+     * deleteReservation
+     *
+     * Supprime une réservation de la base de données selon son ID.
+     *
+     * @param int $idReservation ID de la réservation à supprimer
+     * @return void
+     */
+
     public static function deleteReservation($idReservation)
     {
         $pdo = Database::connection();
@@ -80,6 +162,14 @@ class Reservation
         $stmt->execute(['idReservation' => $idReservation]);
         $stmt->execute();
     }
+
+    /**
+     * getAllAnimalProprio
+     *
+     * Récupère tous les animaux avec le nom et prénom de leur propriétaire, triés par nom du proprio puis nom de l’animal.
+     *
+     * @return array Liste des animaux avec leurs propriétaires
+     */
 
     public static function getAllAnimalProprio()
     {
@@ -95,6 +185,15 @@ class Reservation
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * getAllAnimalProprioByUser
+     *
+     * Récupère tous les animaux appartenant à un utilisateur spécifique, triés par nom.
+     *
+     * @param int $idUser ID du propriétaire
+     * @return array Liste des animaux du propriétaire
+     */
 
     public static function getAllAnimalProprioByUser($idUser)
     {
@@ -112,6 +211,20 @@ class Reservation
         return $stmt->fetchAll();
     }
 
+    /**
+     * createReservation
+     *
+     * Crée une nouvelle réservation avec l'état par défaut à 0 (en attente).
+     *
+     * @param string $DateDebut
+     * @param string $DateFin
+     * @param float $PrixJour
+     * @param string $BesoinParticulier
+     * @param int $IdProprietaire
+     * @param int $IdAnimal
+     * @return void
+     */
+
     public static function createReservation($DateDebut, $DateFin, $PrixJour, $BesoinParticulier, $IdProprietaire, $IdAnimal)
     {
         $pdo = Database::connection();
@@ -128,14 +241,20 @@ class Reservation
         $stmt->execute();
     }
 
-    public static function getReservationbyId($id)
-    {
-        $pdo = Database::connection();
-        $stmt = $pdo->prepare("SELECT * FROM RESERVATIONS WHERE IdReservation = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    /**
+     * updateReservation
+     *
+     * Met à jour une réservation existante avec les nouvelles données fournies.
+     *
+     * @param string $DateDebut
+     * @param string $DateFin
+     * @param float $PrixJour
+     * @param string $BesoinParticulier
+     * @param int $IdProprietaire
+     * @param int $IdAnimal
+     * @param int $idReservation
+     * @return void
+     */
 
     public static function updateReservation($DateDebut, $DateFin, $PrixJour, $BesoinParticulier,$IdProprietaire, $IdAnimal, $idReservation)
     {
@@ -153,14 +272,4 @@ class Reservation
     
         $stmt->execute();
     }   
-
-    public static function getReservationsByAnimalId($IdAnimal)
-    {
-        $pdo = Database::connection();
-        $stmt = $pdo->prepare("SELECT * FROM RESERVATIONS WHERE Etat = 1 AND IdAnimal = :idanimal ORDER BY DateDebut ASC");
-        $stmt->bindParam(':idanimal', $IdAnimal, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll();
-    }
 }

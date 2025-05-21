@@ -25,6 +25,14 @@ class Utilisateur
 
     public ?date $birthdate = null;
 
+    /**
+     * validatePassword
+     *
+     * Vérifie si le mot de passe est assez long, commence par une majuscule et contient un caractère spécial.
+     *
+     * @param string $password
+     * @return void
+     */
 
     public static function validatePassword(string $password): void
     {
@@ -42,6 +50,16 @@ class Utilisateur
         }
     }
 
+    /**
+     * validateDate
+     *
+     * Vérifie si une date respecte bien le format donné.
+     *
+     * @param string $date
+     * @param string $format
+     * @return void
+     */
+
     public static function validateDate(string $date, string $format): void
     {
         $d = \DateTime::createFromFormat($format, $date);
@@ -51,6 +69,17 @@ class Utilisateur
             throw new \Exception("La date '$date' n'est pas valide. Format attendu : $format");
         }
     }
+
+    /**
+     * validateBirthdate
+     *
+     * Vérifie si la date de naissance est bien au bon format et qu'elle n'est pas dans le futur.
+     *
+     * @param string $date La date à vérifier
+     * @param string $format Le format attendu (ex: 'Y-m-d')
+     * @return void
+     * @throws \Exception Si la date est invalide ou supérieure à la date du jour
+     */
 
     public static function validateBirthdate(string $date, string $format): void
     {
@@ -67,6 +96,15 @@ class Utilisateur
             throw new \Exception("La date '$date' ne peut pas être dans le futur.");
         }
     }
+    
+    /**
+     * emailAlreadyExist
+     *
+     * Vérifie si un email est déjà utilisé dans la base.
+     *
+     * @param string $email
+     * @return bool true si l'email existe, false sinon
+     */
 
     public static function emailAlreadyExist($email) :bool{
         $pdo = Database::connection();
@@ -83,6 +121,21 @@ class Utilisateur
         return false;     
     }
     
+    /**
+     * createAccount
+     *
+     * Crée un nouveau compte utilisateur avec hash du mot de passe et statut par défaut à 1 (non validé).
+     *
+     * @param string $name
+     * @param string $firstname
+     * @param string $pseudo
+     * @param string $password
+     * @param string $email
+     * @param string $birthdate
+     * @return void
+     * @throws \Exception En cas d'erreur lors de l'insertion en base
+     */
+
     public static function createAccount($name, $firstname, $pseudo, $password, $email, $birthdate) {
         try {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
@@ -105,6 +158,16 @@ class Utilisateur
         }
     }
 
+    /**
+     * login
+     *
+     * Vérifie si l'email existe et si le mot de passe est correct. Retourne l'utilisateur si ok.
+     *
+     * @param string $email
+     * @param string $password
+     * @return array Infos de l'utilisateur connecté
+     * @throws \Exception Si l'email n'existe pas ou si le mot de passe est incorrect
+     */
     public static function login($email, $password) {
 
         $pdo = Database::connection();
@@ -126,6 +189,15 @@ class Utilisateur
         }
     }
 
+    /**
+     * getUserbyId
+     *
+     * Récupère les infos d’un utilisateur selon son ID.
+     *
+     * @param int $id ID de l'utilisateur
+     * @return array|null Données de l'utilisateur ou null si non trouvé
+     */
+
     public static function getUserbyId($id)
     {
         $pdo = Database::connection();
@@ -135,12 +207,28 @@ class Utilisateur
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * getAll
+     *
+     * Récupère tous les utilisateurs triés par validation (non validés d'abord) puis par statut (admin > employé > proprio).
+     *
+     * @return array Liste des utilisateurs
+     */
+
     public static function getAll()
     {
         $pdo = Database::connection();
         $stmt = $pdo->query("SELECT IdUtilisateur, Nom, Prenom, Pseudo, Email, DateNaissance, Statut, Valide FROM UTILISATEURS ORDER BY Valide ASC, Statut DESC");
         return $stmt->fetchAll();
     }
+
+    /**
+     * getAcceptedUser
+     *
+     * Récupère tous les utilisateurs validés (Valide = 1), triés par validation puis statut.
+     *
+     * @return array Liste des utilisateurs validés
+     */
 
     public static function getAcceptedUser()
     {
@@ -149,6 +237,13 @@ class Utilisateur
         return $stmt->fetchAll();
     }
 
+    /**
+     * getEmployes
+     *
+     * Récupère tous les utilisateurs ayant le statut employé (Statut = 2).
+     *
+     * @return array Liste des employés
+     */
     public static function getEmployes()
     {
         $pdo = Database::connection();
@@ -156,6 +251,14 @@ class Utilisateur
         return $stmt->fetchAll();
     }
 
+    /**
+     * validateUser
+     *
+     * Valide un utilisateur en mettant à jour son champ `Valide` à 1.
+     *
+     * @param int $id ID de l'utilisateur à valider
+     * @return void
+     */
     public static function validateUser($id)
     {
         $pdo = Database::connection();
@@ -166,6 +269,14 @@ class Utilisateur
         $stmt->execute();
     }
     
+    /**
+     * refusedUser
+     *
+     * Supprime un utilisateur de la base selon son ID (cas d'un refus).
+     *
+     * @param int $id ID de l'utilisateur à supprimer
+     * @return void
+     */
     public static function refusedUser($id)
     {
         $pdo = Database::connection();
@@ -176,6 +287,20 @@ class Utilisateur
         $stmt->execute();
     }
 
+    /**
+     * addUtilisateur
+     *
+     * Ajoute un nouvel utilisateur en base avec un mot de passe hashé.
+     *
+     * @param string $Nom
+     * @param string $Prenom
+     * @param string $Pseudo
+     * @param string $MotDePasse
+     * @param string $Email
+     * @param string $DateNaissance
+     * @param int $Statut
+     * @return void
+     */
     public static function addUtilisateur($Nom, $Prenom, $Pseudo, $MotDePasse, $Email, $DateNaissance, $Statut)
     {
         $passwordHash = password_hash($MotDePasse, PASSWORD_DEFAULT);
@@ -194,7 +319,21 @@ class Utilisateur
     
         $stmt->execute();
     }
- 
+    
+    /**
+     * updateUtilisateur
+     *
+     * Met à jour les infos d’un utilisateur existant dans la base.
+     *
+     * @param string $Nom
+     * @param string $Prenom
+     * @param string $Pseudo
+     * @param string $Email
+     * @param string $DateNaissance
+     * @param int $Statut
+     * @param int $idUtilisateur
+     * @return void
+     */
     public static function updateUtilisateur($Nom, $Prenom, $Pseudo, $Email, $DateNaissance, $Statut, $idUtilisateur)
     {
         $pdo = Database::connection();
@@ -213,6 +352,15 @@ class Utilisateur
         $stmt->execute();
     }
 
+    /**
+     * getAnimauxByUserId
+     *
+     * Récupère tous les animaux appartenant à un utilisateur donné.
+     *
+     * @param int $id ID du propriétaire
+     * @return array Liste des animaux de l'utilisateur
+     */
+
     public static function getAnimauxByUserId($id)
     {
         $pdo = Database::connection();
@@ -224,7 +372,13 @@ class Utilisateur
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
-
+    /**
+     * getAllWithAnimaux
+     *
+     * Récupère tous les utilisateurs validés avec leurs animaux associés.
+     *
+     * @return array Liste des utilisateurs avec une clé 'animaux' contenant leurs animaux
+     */
     public static function getAllWithAnimaux()
     {
         $pdo = Database::connection();
@@ -237,5 +391,26 @@ class Utilisateur
         }
         
         return $utilisateurs;
+    }
+
+    /**
+     * InsertRapport
+     *
+     * Insère un nouveau rapport avec son contenu, la date du jour et l'ID de l'administrateur.
+     *
+     * @param string $contenu Contenu du rapport
+     * @param int $id ID de l'administrateur
+     * @return void
+     */
+    public static function InsertRapport($contenu, $id)
+    {
+        $pdo = Database::connection();
+    
+        $stmt = $pdo->prepare("INSERT INTO RAPPORT (Contenu, DateGeneration, IdAdministrateur) VALUES (:contenu , CURDATE(), :idAdministrateur)");
+    
+        $stmt->bindParam(':contenu', $contenu);
+        $stmt->bindParam(':idAdministrateur', $id);
+    
+        $stmt->execute();
     }
 }

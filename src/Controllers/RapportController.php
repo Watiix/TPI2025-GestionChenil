@@ -25,8 +25,11 @@ class RapportController extends BaseController {
 
     public function showRapport(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
-        $utilisateurs = Utilisateur::getAllWithAnimaux();
+        if($_SESSION['user']['Statut'] !== 3){
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
 
+        $utilisateurs = Utilisateur::getAllWithAnimaux();
 
         return $this->view->render($response, 'rapport.php');
     }
@@ -43,35 +46,45 @@ class RapportController extends BaseController {
      */
     public function generate(ServerRequestInterface $request, ResponseInterface $response, array $args) : ResponseInterface
     {
+        if($_SESSION['user']['Statut'] !== 3){
+            return $response->withHeader('Location', '/')->withStatus(302);
+        }
+
         $utilisateurs = Utilisateur::getAllWithAnimaux(); // Structure : user + animaux[]
         $nbUsers = count($utilisateurs);
         $nbAnimaux = array_reduce($utilisateurs, fn($carry, $u) => $carry + count($u['animaux']), 0);
         $nbReservations = count(Reservation::getAllReservation());
+        $userId = $_SESSION['user']['IdUtilisateur'];
+        $contenu = "Rapport PDF chenil";
+
         // Génère le HTML depuis la vue
         ob_start();
         require __DIR__ . '/../../views/pdf-content.php';
         $html = ob_get_clean();
     
-        // Crée le PDF et le sauve dans le dossier tmp
-        $mpdf = new Mpdf([
-            'default_font' => 'DejaVuSans',
-            'tempDir' => __DIR__ . '/../../tmp'
-        ]);
-    
-        $mpdf->WriteHTML($html);
-    
-        // Définir le chemin de sortie
-        $pdfPath = __DIR__ . '/../../tmp/rapport.pdf';
-        $mpdf->Output($pdfPath, \Mpdf\Output\Destination::FILE); // <-- Sauvegarde dans le fichier
-    
-        $response->getBody()->write(json_encode([
-            'status' => 'ok',
-            'pdf' => '/tmp/rapport.pdf'
-        ]));
+        try {
+            // Crée le PDF et le sauve dans le dossier tmp
+            $mpdf = new Mpdf([
+                'default_font' => 'DejaVuSans',
+                'tempDir' => __DIR__ . '/../../tmp'
+            ]);
 
+            $mpdf->WriteHTML($html);
 
-        $_SESSION['form_succes'] = "Rapport générer avec succès.";
-        return $response->withHeader('Location', '/')->withStatus(302);
-        
+            // Définir le chemin de sortie
+            $pdfPath = __DIR__ . '/../../tmp/rapport.pdf';
+            $mpdf->Output($pdfPath, \Mpdf\Output\Destination::FILE); // <-- Sauvegarde dans le fichier
+
+            $response->getBody()->write(json_encode([
+                'status' => 'ok',
+                'pdf' => '/tmp/rapport.pdf'
+            ]));
+
+            Utilisateur::InsertRapport($contenu, $userId);
+            $_SESSION['form_succes'] = "Rapport générer avec succès.";
+            return $response->withHeader('Location', '/')->withStatus(302);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
