@@ -3,6 +3,7 @@ namespace Lucancstr\GestionChenil\Controllers;
 
 use Lucancstr\GestionChenil\Models\Animal;
 use Lucancstr\GestionChenil\Models\Utilisateur;
+use Lucancstr\GestionChenil\Models\Reservation;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Http\Response;
@@ -30,7 +31,7 @@ class AnimalController extends BaseController {
                 if($id == 0)
                     $animaux = Animal::getAllWithProprietaire();
                 else
-                    $animaux = Animal::getAnimalByIdAnimal($id);
+                    $animaux = Utilisateur::getAnimauxByUserId($id);
             else
                 $animaux = Animal::getAllWithProprietaire();
 
@@ -228,6 +229,7 @@ class AnimalController extends BaseController {
 
         if (!isset($_SESSION['form_error'])) {
             Animal::updateAnimal($NomAnimal,$Race, $Age, $Sexe, $Poids, $Taille, $Alimentation, $id_utilisateur, $IdAnimal);
+            Reservation::updateReservationIfUpdateAnimal($IdAnimal, $id_utilisateur);
             $_SESSION['form_succes'] = "Animal modifie avec succès.";   
         }
 

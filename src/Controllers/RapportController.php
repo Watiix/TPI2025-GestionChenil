@@ -50,7 +50,7 @@ class RapportController extends BaseController {
             return $response->withHeader('Location', '/')->withStatus(302);
         }
 
-        $utilisateurs = Utilisateur::getAllWithAnimaux(); // Structure : user + animaux[]
+        $utilisateurs = Utilisateur::getAllWithAnimaux();
         $nbUsers = count($utilisateurs);
         $nbAnimaux = array_reduce($utilisateurs, fn($carry, $u) => $carry + count($u['animaux']), 0);
         $nbReservations = count(Reservation::getAllReservation());

@@ -119,18 +119,11 @@ class Tache
     {
         $pdo = Database::connection();
         
-        $stmt = $pdo->prepare("
-            SELECT 
-                t.*,
-                a.IdAnimal,
-                a.NomAnimal,
-                u.Nom AS NomEmploye,
-                u.Prenom AS PrenomEmploye
+        $stmt = $pdo->prepare("SELECT t.*, a.IdAnimal,a.NomAnimal, u.Nom AS NomEmploye, u.Prenom AS PrenomEmploye
             FROM TACHES t
             LEFT JOIN ANIMAUX a ON t.IdAnimal = a.IdAnimal
             LEFT JOIN UTILISATEURS u ON t.IdEmploye = u.IdUtilisateur
-            WHERE DATE(t.Date) = CURDATE() ORDER BY t.IdEmploye ASC
-        ");
+            WHERE DATE(t.Date) = CURDATE() ORDER BY t.IdEmploye ASC");
     
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

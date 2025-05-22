@@ -255,7 +255,6 @@ class Reservation
      * @param int $idReservation
      * @return void
      */
-
     public static function updateReservation($DateDebut, $DateFin, $PrixJour, $BesoinParticulier,$IdProprietaire, $IdAnimal, $idReservation)
     {
         $pdo = Database::connection();
@@ -272,4 +271,24 @@ class Reservation
     
         $stmt->execute();
     }   
+
+    /**
+     * updateReservationIfUpdateAnimal
+     *
+     * Met à jour le propriétaire d'une réservation lors on modifie le propriétaire d'un animal
+     *
+     * @param int $IdAnimal
+     * @param int $id_utilisateur
+     */
+    public static function updateReservationIfUpdateAnimal($IdAnimal, $id_utilisateur)
+    {
+        $pdo = Database::connection();
+    
+        $stmt = $pdo->prepare("UPDATE RESERVATIONS SET IdProprietaire = :IdProprietaire WHERE IdAnimal = :IdAnimal ");
+
+        $stmt->bindParam(':IdAnimal', $IdAnimal);
+        $stmt->bindParam(':IdProprietaire', $id_utilisateur);
+    
+        $stmt->execute();
+    }
 }
